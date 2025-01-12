@@ -1,0 +1,6 @@
+@BlueModusDemo_HostAddress = http://localhost:5035
+
+GET {{BlueModusDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
