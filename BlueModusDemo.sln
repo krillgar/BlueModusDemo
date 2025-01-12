@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueModusDemo", "BlueModusDemo\BlueModusDemo.csproj", "{58C7955A-A829-4FCE-9252-BB6A9418D2ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueModusDemo.Services", "BlueModusDemo.Services\BlueModusDemo.Services.csproj", "{6CF8AA01-00EF-4457-B367-C2BDDBF3DA57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{58C7955A-A829-4FCE-9252-BB6A9418D2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58C7955A-A829-4FCE-9252-BB6A9418D2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58C7955A-A829-4FCE-9252-BB6A9418D2ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CF8AA01-00EF-4457-B367-C2BDDBF3DA57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF8AA01-00EF-4457-B367-C2BDDBF3DA57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF8AA01-00EF-4457-B367-C2BDDBF3DA57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF8AA01-00EF-4457-B367-C2BDDBF3DA57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
