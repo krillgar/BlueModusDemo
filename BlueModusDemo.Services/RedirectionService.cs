@@ -32,7 +32,7 @@ public class RedirectionService : IRedirectionService
     };
 
     /// <inheritdoc />
-    public Task<string> GetRedirections()
+    public Task<string> GetRedirectionsAsync()
     {
         return Task.FromResult(JsonConvert.SerializeObject(_redirectResults));
     }

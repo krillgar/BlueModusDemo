@@ -1,3 +1,4 @@
+using BlueModusDemo.Middleware;
 using BlueModusDemo.Services.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,8 @@ builder.Services
     .AddLogging()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .UseServices();
+    .UseServices()
+    .AddTransient<RedirectHandler>();
 
 var app = builder.Build();
 
@@ -24,6 +26,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<RedirectMiddleware>();
 
 app.MapControllers();
 
