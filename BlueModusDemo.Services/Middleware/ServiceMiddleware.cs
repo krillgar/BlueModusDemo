@@ -6,7 +6,7 @@ public static class ServiceMiddleware
 {
     public static IServiceCollection UseServices(this IServiceCollection services)
     {
-        services.AddScoped<IRedirectionService, RedirectionService>();
+        services.AddTransient<IRedirectionService, RedirectionService>();
 
         return services;
     }
