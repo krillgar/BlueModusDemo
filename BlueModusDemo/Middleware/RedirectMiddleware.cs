@@ -1,5 +1,7 @@
-﻿using BlueModusDemo.Services;
+﻿using BlueModusDemo.Options;
+using BlueModusDemo.Services;
 using BlueModusDemo.Services.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Net;
@@ -9,18 +11,14 @@ namespace BlueModusDemo.Middleware;
 public class RedirectMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IRedirectionService _service;
     private readonly ILogger _logger;
     private static IEnumerable<RedirectResult> _routes = Enumerable.Empty<RedirectResult>();
     private readonly static object _lock = new object();
 
-    public RedirectMiddleware(RequestDelegate next, IRedirectionService service, ILoggerFactory loggerFactory)
+    public RedirectMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
         _logger = loggerFactory?.CreateLogger<RedirectMiddleware>() ?? throw new ArgumentNullException(nameof(loggerFactory));
-
-        PopulateRoutes().Wait();
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -67,9 +65,28 @@ public class RedirectMiddleware
         return (path, statusCode);
     }
 
-    public async Task PopulateRoutes()
+    public static void ConfigureRoutes(IServiceProvider provider, CancellationToken cancellationToken)
     {
-        var results = await _service.GetRedirectionsAsync();
+        var thread = new Thread(new ThreadStart(async () =>
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                using var scope = provider.CreateScope();
+                var service = scope.ServiceProvider.GetRequiredService<IRedirectionService>();
+                var factory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+
+                await PopulateRoutes(service, factory.CreateLogger<RedirectMiddleware>());
+
+                var options = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<RedirectOptions>>();
+                await Task.Delay(TimeSpan.FromMinutes(options.Value.RefreshMinutes), cancellationToken);
+            }
+        }));
+        thread.Start();
+    }
+
+    private static async Task PopulateRoutes(IRedirectionService service, ILogger logger)
+    {
+        var results = await service.GetRedirectionsAsync();
 
         var routes = JsonConvert.DeserializeObject<IEnumerable<RedirectResult>>(results) ?? Enumerable.Empty<RedirectResult>();
 
@@ -78,6 +95,6 @@ public class RedirectMiddleware
             _routes = routes;
         }
 
-        _logger.LogInformation("Routes repopulated at {now}.", DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss.fff"));
+        logger.LogInformation("Routes repopulated at {now}.", DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss.fff"));
     }
 }
