@@ -11,8 +11,7 @@ builder.Services
     .AddLogging()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .UseServices()
-    .AddTransient<RedirectHandler>();
+    .UseServices();
 
 var app = builder.Build();
 
