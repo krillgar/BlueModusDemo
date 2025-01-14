@@ -1,11 +1,16 @@
+using BlueModusDemo.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddLogging()
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .UseCustomRedirection(builder.Configuration);
 
 var app = builder.Build();
 
@@ -20,6 +25,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseMiddleware<RedirectMiddleware>();
+
 app.MapControllers();
+
+var tokenSource = new CancellationTokenSource();
+
+RedirectMiddleware.ConfigureRoutes(app.Services, tokenSource.Token);
 
 app.Run();
