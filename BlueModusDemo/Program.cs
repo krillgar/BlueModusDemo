@@ -1,5 +1,4 @@
 using BlueModusDemo.Middleware;
-using BlueModusDemo.Services.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,6 @@ builder.Services
     .AddLogging()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .UseServices()
     .UseCustomRedirection(builder.Configuration);
 
 var app = builder.Build();
